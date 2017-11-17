@@ -16,9 +16,6 @@
     <Folder Include="Responses\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\kraken.net\src\Kraken.Net\Kraken.Net.csproj" />
-  </ItemGroup>
-  <ItemGroup>
     <None Update="Responses\UnknownMethod.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -28,5 +25,8 @@
     <None Update="Responses\Assets.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Kraken.Net\Kraken.Net.csproj" />
   </ItemGroup>
 </Project>
