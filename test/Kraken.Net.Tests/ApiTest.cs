@@ -36,6 +36,15 @@ namespace Kraken.Net.Tests
                     Content = new StringContent(File.ReadAllText("Responses/ServerTime.json"))
                 }
             );
+
+            handler.AddResponse(
+                new Uri(String.Format("{0}/{1}/public/{2}", Api.Url, Api.Version, "OHLC")),
+                String.Format("pair={0}&interval={1}&since={2}", "ETHEUR", "5", "1511034000"),
+                new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new StringContent(File.ReadAllText("Responses/OHLC.json"))
+                }
+            );
         }
 
         [Fact]
@@ -79,6 +88,16 @@ namespace Kraken.Net.Tests
             Assert.Equal(14, utc.Hour);
             Assert.Equal(48, utc.Minute);
             Assert.Equal(43, utc.Second);
+        }
+
+
+        [Fact]
+        public void TestGetOhlcData()
+        {
+            var ohlcData = _api.GetOhlcData("ETHEUR", 5, 1511034000);
+
+            Assert.Equal(15, ohlcData.OhlcHistory.Count);
+            Assert.Equal(1511038200, ohlcData.Last);
         }
 
         [Fact]

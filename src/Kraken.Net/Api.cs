@@ -27,7 +27,7 @@ namespace Kraken.Net
         /// The default Kraken API version
         /// </summary>
         public const String Version = "0";
-        
+
         /// <summary>
         /// The media type for requests
         /// </summary>
@@ -63,7 +63,7 @@ namespace Kraken.Net
         /// <param name="key">The API key</param>
         /// <param name="secret">The API secret</param>
         public Api(String key, String secret) : this(key, secret, Url, Version)
-        {}
+        { }
 
         /// <summary>
         /// Create a new instance with the given key and secret, and a custom url
@@ -72,7 +72,7 @@ namespace Kraken.Net
         /// <param name="secret">The API secret</param>
         /// <param name="url">A custom API url</param>
         public Api(String key, String secret, String url) : this(key, secret, url, Version)
-        {}
+        { }
 
         /// <summary>
         /// Create a new instance with the given key and secret, and a custom url and version
@@ -82,7 +82,7 @@ namespace Kraken.Net
         /// <param name="url">A custom API url</param>
         /// <param name="version">A custom API version</param>
         public Api(String key, String secret, String url, String version) : this(key, secret, url, version, null)
-        {}
+        { }
 
         /// <summary>
         /// Create a new instance with the given key and secret, and a custom url and version
@@ -108,7 +108,7 @@ namespace Kraken.Net
         #region Methods
 
         #region public
-        
+
         #region async Methods
 
         /// <summary>
@@ -202,15 +202,16 @@ namespace Kraken.Net
 
             IList<AssetPair> assetPairs = await _cache.GetAssetPairsAsync();
 
-            if (String.IsNullOrWhiteSpace(pairs)) 
+            if (String.IsNullOrWhiteSpace(pairs))
                 return assetPairs;
-            
+
             string[] pairNames = pairs.Split(',');
-                
+
             assetPairs = assetPairs.Where(a => pairNames.Contains(a.Name)).ToList();
 
             return assetPairs;
         }
+
 
         /// <summary>
         /// Get a fresh, not cached list of asset pairs
@@ -221,7 +222,7 @@ namespace Kraken.Net
         internal async Task<IList<AssetPair>> GetNoCacheAssetPairsAsync(String pairs, InfoLevel level)
         {
             // TODO: What is about the pairs parameter?
-            
+
             var parameters = new Dictionary<String, String>();
 
             switch (level)
@@ -251,7 +252,7 @@ namespace Kraken.Net
             foreach (JToken token in results)
             {
                 AssetPair a = JsonConvert.DeserializeObject<AssetPair>(token.First.ToString());
-                
+
                 if (!String.IsNullOrWhiteSpace(a.BaseAlias) && a.BaseAlias.Length > 1)
                     a.Base = assets.FirstOrDefault(o => o.Name.Equals(a.BaseAlias.Substring(1)));
 
@@ -263,6 +264,57 @@ namespace Kraken.Net
 
             return assetPairs;
         }
+
+
+        /// <summary>
+        /// Returns an array of pair name and OHLC data
+        /// </summary>
+        /// <param name="pair">An asset pair to get OHLC data for (e.g. XBTEUR for Bitcoin-Euro)</param>
+        /// <param name="interval">time frame interval in minutes (optional): 1 (default), 5, 15, 30, 60, 240, 1440, 10080, 21600</param>
+        /// <param name="since">eturn committed OHLC data since given id (optional.  exclusive)</param>
+        /// <returns></returns>
+        public async Task<OhlcResult> GetOhlcDataAsync(String pair, int interval = 1, int? since = null)
+        {
+            var parameters = new Dictionary<String, String>();
+            parameters.Add("pair", pair);
+            parameters.Add("interval", interval.ToString());
+            if (since.HasValue)
+                parameters.Add("since", since.Value.ToString());
+
+            var json = await QueryPublicAsync("OHLC", parameters);
+
+            JObject jObj = JObject.Parse(json);
+            JEnumerable<JToken> results = jObj["result"].Children();
+
+            JToken jTicks = results.ElementAt(0);
+            JToken jLast = results.ElementAt(1);
+
+            int last = JsonConvert.DeserializeObject<int>(jLast.First.ToString());
+
+            List<OhlcData> ohlcHistory = new List<OhlcData>();
+            foreach (var element in jTicks.First)
+            {
+                ohlcHistory.Add(new OhlcData
+                {
+                    Pair = pair,
+                    Time = JsonConvert.DeserializeObject<int>(element[0].ToString()),
+                    Open = JsonConvert.DeserializeObject<decimal>(element[1].ToString()),
+                    High = JsonConvert.DeserializeObject<decimal>(element[2].ToString()),
+                    Low = JsonConvert.DeserializeObject<decimal>(element[3].ToString()),
+                    Close = JsonConvert.DeserializeObject<decimal>(element[4].ToString()),
+                    VWAP = JsonConvert.DeserializeObject<decimal>(element[5].ToString()),
+                    Volume = JsonConvert.DeserializeObject<decimal>(element[6].ToString()),
+                    Count = JsonConvert.DeserializeObject<int>(element[7].ToString())
+                });
+            }
+
+            return new OhlcResult()
+            {
+                OhlcHistory = ohlcHistory,
+                Last = last
+            };
+        }
+
 
         /// <summary>
         /// Get the current users account balance
@@ -281,7 +333,7 @@ namespace Kraken.Net
         /// <returns></returns>
         public async Task<String> GetOpenOrdersAsync(Boolean includeTrades = false, String userReferenceId = null)
         {
-            var parameters = new Dictionary<String, String> {{"trades", includeTrades.ToString()}};
+            var parameters = new Dictionary<String, String> { { "trades", includeTrades.ToString() } };
 
             if (!String.IsNullOrWhiteSpace(userReferenceId))
             {
@@ -301,7 +353,7 @@ namespace Kraken.Net
 
             JObject jObj = JObject.Parse(result);
 
-            string rfc = (string) jObj.SelectToken("result.rfc1123");
+            string rfc = (string)jObj.SelectToken("result.rfc1123");
 
             return Convert.ToDateTime(rfc);
         }
@@ -314,7 +366,7 @@ namespace Kraken.Net
         public async Task<String> GetTradeBalanceAsync(String asset)
         {
             var parameters = new Dictionary<String, String>();
-            
+
             if (!String.IsNullOrWhiteSpace(asset))
             {
                 parameters.Add("asset", asset);
@@ -334,9 +386,9 @@ namespace Kraken.Net
         {
             string postData = String.Empty;
 
-            if (parameters != null && parameters.Count > 0) 
+            if (parameters != null && parameters.Count > 0)
             {
-                foreach(KeyValuePair<String, String> pair in parameters)
+                foreach (KeyValuePair<String, String> pair in parameters)
                 {
                     postData = String.Concat(postData, "&", pair.Key, "=", pair.Value);
                 }
@@ -344,7 +396,7 @@ namespace Kraken.Net
                 postData = postData.Substring(1);
             }
 
-            using (var client = _clientHandler == null ?  new HttpClient() : new HttpClient(_clientHandler))
+            using (var client = _clientHandler == null ? new HttpClient() : new HttpClient(_clientHandler))
             {
                 string address = String.Format("{0}/{1}/public/{2}", _url, _version, method);
                 var content = new StringContent(postData, Encoding.UTF8, _mediaType);
@@ -382,7 +434,7 @@ namespace Kraken.Net
             }
 
             string postData = String.Empty;
-            foreach(KeyValuePair<String, String> pair in parameters)
+            foreach (KeyValuePair<String, String> pair in parameters)
             {
                 postData = String.Concat(postData, "&", pair.Key, "=", pair.Value);
             }
@@ -392,7 +444,7 @@ namespace Kraken.Net
             string path = String.Format("/{0}/private/{1}", _version, method);
             string signature = CreateSignature(path, parameters["nonce"], postData);
 
-            using (var client = _clientHandler == null ?  new HttpClient() : new HttpClient(_clientHandler))
+            using (var client = _clientHandler == null ? new HttpClient() : new HttpClient(_clientHandler))
             {
                 client.DefaultRequestHeaders.Add("API-Key", _key);
                 client.DefaultRequestHeaders.Add("API-Sign", signature);
@@ -422,7 +474,7 @@ namespace Kraken.Net
         /// <returns>A list of all assets</returns>
         public IList<Asset> GetAssets()
         {
-            try 
+            try
             {
                 return GetAssetsAsync().Result;
             }
@@ -475,7 +527,7 @@ namespace Kraken.Net
         /// <returns>A list with all asset pairs</returns>
         public IList<AssetPair> GetAssetPairs(InfoLevel level)
         {
-            try 
+            try
             {
                 return GetAssetPairsAsync(level).Result;
             }
@@ -496,6 +548,25 @@ namespace Kraken.Net
             try
             {
                 return GetAssetPairsAsync(pairs).Result;
+            }
+            catch (AggregateException ex)
+            {
+                RethrowKrakenException(ex);
+                throw;
+            }
+        }
+        /// <summary>
+        /// Returns an array of pair name and OHLC data
+        /// </summary>
+        /// <param name="pair">An asset pair to get OHLC data for (e.g. XBTEUR for Bitcoin-Euro)</param>
+        /// <param name="interval">time frame interval in minutes (optional): 1 (default), 5, 15, 30, 60, 240, 1440, 10080, 21600</param>
+        /// <param name="since">eturn committed OHLC data since given id (optional.  exclusive)</param>
+        /// <returns></returns>
+        public OhlcResult GetOhlcData(String pair, int interval = 1, int? since = null)
+        {
+            try
+            {
+                return GetOhlcDataAsync(pair, interval, since).Result;
             }
             catch (AggregateException ex)
             {
@@ -529,7 +600,7 @@ namespace Kraken.Net
         /// <returns>array of asset names and balance amount</returns>
         public String GetBalance()
         {
-            try 
+            try
             {
                 return GetBalanceAsync().Result;
             }
@@ -643,7 +714,7 @@ namespace Kraken.Net
 
             foreach (JToken eToken in token.Children())
             {
-                var errorText = (string) eToken;
+                var errorText = (string)eToken;
                 if (!String.IsNullOrWhiteSpace(errorText))
                     list.Add(new Error(errorText));
             }
