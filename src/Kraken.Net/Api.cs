@@ -297,6 +297,7 @@ namespace Kraken.Net
                 ohlcHistory.Add(new OhlcData
                 {
                     Pair = pair,
+                    Interval = interval,
                     Time = JsonConvert.DeserializeObject<int>(element[0].ToString()),
                     Open = JsonConvert.DeserializeObject<decimal>(element[1].ToString()),
                     High = JsonConvert.DeserializeObject<decimal>(element[2].ToString()),

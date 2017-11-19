@@ -95,6 +95,7 @@ namespace Kraken.Net.Tests
         public void TestGetOhlcData()
         {
             const string pair = "ETHEUR";
+            const int interval = 5;
             const int expextedTime = 1511034300;
             const decimal expectedOpen = 285.00m;
             const decimal expectedHigh = 285.00m;
@@ -104,12 +105,13 @@ namespace Kraken.Net.Tests
             const decimal expectedVolume = 136.98078487m;
             const int expectedCount = 48;
 
-            var ohlcResult = _api.GetOhlcData(pair, 5, 1511034000);
+            var ohlcResult = _api.GetOhlcData(pair, interval, 1511034000);
 
             Assert.Equal(1511038200, ohlcResult.Last);
             Assert.Equal(15, ohlcResult.OhlcHistory.Count);
             var ohlcData = ohlcResult.OhlcHistory[0];
             Assert.Equal(pair, ohlcData.Pair);
+            Assert.Equal(interval, ohlcData.Interval);
             Assert.Equal(expextedTime, ohlcData.Time);
             Assert.Equal(expectedOpen, ohlcData.Open);
             Assert.Equal(expectedHigh, ohlcData.High);

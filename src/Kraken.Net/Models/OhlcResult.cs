@@ -13,6 +13,7 @@ namespace Kraken.Net.Models
     public class OhlcData
     {
         public string Pair { get; set; }
+        public int Interval { get; set; }
         public int Time { get; set; }
         public decimal Open { get; set; }
         public decimal High { get; set; }
