@@ -11,7 +11,7 @@ Public:
 | Get asset info           | :white_check_mark: |
 | Get tradable asset pairs | :white_check_mark: |
 | Get ticker information   | :x:                |
-| Get OHLC data            | :x:                |
+| Get OHLC data            | :white_check_mark: |
 | Get order book           | :x:                |
 | Get recent trades        | :x:                |
 | Get recent spread data   | :x:                |
