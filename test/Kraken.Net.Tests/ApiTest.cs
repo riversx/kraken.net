@@ -94,10 +94,30 @@ namespace Kraken.Net.Tests
         [Fact]
         public void TestGetOhlcData()
         {
-            var ohlcData = _api.GetOhlcData("ETHEUR", 5, 1511034000);
+            const string pair = "ETHEUR";
+            const int expextedTime = 1511034300;
+            const decimal expectedOpen = 285.00m;
+            const decimal expectedHigh = 285.00m;
+            const decimal expectedLow = 284.80m;
+            const decimal expectedClose = 284.96m;
+            const decimal expectedVWAP = 284.96m;
+            const decimal expectedVolume = 136.98078487m;
+            const int expectedCount = 48;
 
-            Assert.Equal(15, ohlcData.OhlcHistory.Count);
-            Assert.Equal(1511038200, ohlcData.Last);
+            var ohlcResult = _api.GetOhlcData(pair, 5, 1511034000);
+
+            Assert.Equal(1511038200, ohlcResult.Last);
+            Assert.Equal(15, ohlcResult.OhlcHistory.Count);
+            var ohlcData = ohlcResult.OhlcHistory[0];
+            Assert.Equal(pair, ohlcData.Pair);
+            Assert.Equal(expextedTime, ohlcData.Time);
+            Assert.Equal(expectedOpen, ohlcData.Open);
+            Assert.Equal(expectedHigh, ohlcData.High);
+            Assert.Equal(expectedLow, ohlcData.Low);
+            Assert.Equal(expectedClose, ohlcData.Close);
+            Assert.Equal(expectedVWAP, ohlcData.VWAP);
+            Assert.Equal(expectedVolume, ohlcData.Volume);
+            Assert.Equal(expectedCount, ohlcData.Count);
         }
 
         [Fact]
@@ -112,7 +132,6 @@ namespace Kraken.Net.Tests
             catch (AggregateException ex)
             {
                 Assert.IsType<KrakenException>(ex.InnerException);
-
                 errors = ((KrakenException) ex.InnerException).Errors;
             }
 
