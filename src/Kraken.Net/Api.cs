@@ -286,18 +286,13 @@ namespace Kraken.Net
             JObject jObj = JObject.Parse(json);
             JEnumerable<JToken> results = jObj["result"].Children();
 
-            JToken jTicks = results.ElementAt(0);
-            JToken jLast = results.ElementAt(1);
-
-            int last = JsonConvert.DeserializeObject<int>(jLast.First.ToString());
+            JToken jOhlcData = results.ElementAt(0);
 
             List<OhlcData> ohlcHistory = new List<OhlcData>();
-            foreach (var element in jTicks.First)
+            foreach (var element in jOhlcData.First)
             {
                 ohlcHistory.Add(new OhlcData
                 {
-                    Pair = pair,
-                    Interval = interval,
                     Time = JsonConvert.DeserializeObject<int>(element[0].ToString()),
                     Open = JsonConvert.DeserializeObject<decimal>(element[1].ToString()),
                     High = JsonConvert.DeserializeObject<decimal>(element[2].ToString()),
@@ -309,8 +304,13 @@ namespace Kraken.Net
                 });
             }
 
+            JToken jLast = results.ElementAt(1);
+            int last = JsonConvert.DeserializeObject<int>(jLast.First.ToString());
+
+            var receivedPair = ((JProperty)jOhlcData).Name;
             return new OhlcResult()
             {
+                Pair = receivedPair,
                 OhlcHistory = ohlcHistory,
                 Last = last
             };

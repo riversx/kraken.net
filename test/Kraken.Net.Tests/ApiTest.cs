@@ -108,10 +108,10 @@ namespace Kraken.Net.Tests
             var ohlcResult = _api.GetOhlcData(pair, interval, 1511034000);
 
             Assert.Equal(1511038200, ohlcResult.Last);
+            Assert.Equal("XETHZEUR", ohlcResult.Pair);
             Assert.Equal(15, ohlcResult.OhlcHistory.Count);
+            
             var ohlcData = ohlcResult.OhlcHistory[0];
-            Assert.Equal(pair, ohlcData.Pair);
-            Assert.Equal(interval, ohlcData.Interval);
             Assert.Equal(expextedTime, ohlcData.Time);
             Assert.Equal(expectedOpen, ohlcData.Open);
             Assert.Equal(expectedHigh, ohlcData.High);

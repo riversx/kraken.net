@@ -5,6 +5,7 @@ namespace Kraken.Net.Models
 {
     public class OhlcResult
     {
+        public string Pair { get; set; }
         public List<OhlcData> OhlcHistory { get; set; }
         public int Last { get; set; }
     }
@@ -12,8 +13,6 @@ namespace Kraken.Net.Models
 
     public class OhlcData
     {
-        public string Pair { get; set; }
-        public int Interval { get; set; }
         public int Time { get; set; }
         public decimal Open { get; set; }
         public decimal High { get; set; }
