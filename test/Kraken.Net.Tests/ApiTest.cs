@@ -20,8 +20,8 @@ namespace Kraken.Net.Tests
             _api = new Api(null, null, Api.Url, Api.Version, handler);
 
             handler.AddResponse(
-                new Uri(String.Format("{0}/{1}/public/{2}", Api.Url, Api.Version, "Assets")), 
-                String.Empty, 
+                new Uri(String.Format("{0}/{1}/public/{2}", Api.Url, Api.Version, "Assets")),
+                String.Empty,
                 new HttpResponseMessage(HttpStatusCode.OK)
                 {
                     Content = new StringContent(File.ReadAllText("Responses/Assets.json"))
@@ -29,8 +29,8 @@ namespace Kraken.Net.Tests
             );
 
             handler.AddResponse(
-                new Uri(String.Format("{0}/{1}/public/{2}", Api.Url, Api.Version, "Time")), 
-                String.Empty, 
+                new Uri(String.Format("{0}/{1}/public/{2}", Api.Url, Api.Version, "Time")),
+                String.Empty,
                 new HttpResponseMessage(HttpStatusCode.OK)
                 {
                     Content = new StringContent(File.ReadAllText("Responses/ServerTime.json"))
@@ -47,20 +47,29 @@ namespace Kraken.Net.Tests
             );
 
             handler.AddResponse(
+                new Uri(String.Format("{0}/{1}/public/{2}", Api.Url, Api.Version, "OHLC")),
+                String.Format("pair={0}&interval={1}&since={2}", "ETHEURO", "5", "1511034000"),
+                new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new StringContent(File.ReadAllText("Responses/Errors/UnknownAssetError.json"))
+                }
+            );
+
+            handler.AddResponse(
                 new Uri(String.Format("{0}/{1}/public/{2}", Api.Url, Api.Version, "Ticker")),
                 String.Format("pair={0}", "XBTEUR,ETHEUR"),
                 new HttpResponseMessage(HttpStatusCode.OK)
                 {
                     Content = new StringContent(File.ReadAllText("Responses/Ticker.json"))
                 }
-            );        
+            );
         }
 
         [Fact]
         public void TestGetAssets()
         {
             var assets = _api.GetAssets(null);
-            
+
             Assert.True(assets.Count > 0);
 
             Assert.Contains(assets, a => a.Name.Equals("EUR"));
@@ -103,9 +112,14 @@ namespace Kraken.Net.Tests
         [Fact]
         public void TestGetTicker()
         {
-            var pairs = new List<string>() {"XBTEUR", "ETHEUR" };
-            var ticker = _api.GetTicker(pairs);
-            Assert.NotNull(ticker);
+            var pairs = new List<string>() { "XBTEUR", "ETHEUR" };
+
+            var tickers = _api.GetTicker(pairs);
+
+            Assert.NotNull(tickers);
+            Assert.Equal(2, tickers.Count);
+            Assert.Contains(tickers, t => t.Name == "XXBTZEUR");
+            Assert.Contains(tickers, t => t.Name == "XETHZEUR");
         }
 
 
@@ -128,7 +142,7 @@ namespace Kraken.Net.Tests
             Assert.Equal(1511038200, ohlcResult.Last);
             Assert.Equal("XETHZEUR", ohlcResult.Pair);
             Assert.Equal(15, ohlcResult.OhlcHistory.Count);
-            
+
             var ohlcData = ohlcResult.OhlcHistory[0];
             Assert.Equal(expextedTime, ohlcData.Time);
             Assert.Equal(expectedOpen, ohlcData.Open);
@@ -140,19 +154,30 @@ namespace Kraken.Net.Tests
             Assert.Equal(expectedCount, ohlcData.Count);
         }
 
+        [Fact(Skip="Unimplemented error catch")]
+        public void TestGetOhlcWithWrongPair()
+        {
+            const string pair = "ETHEURO";
+            const int interval = 5;
+
+            var ohlcResult = _api.GetOhlc(pair, interval, 1511034000);
+
+            Assert.Equal(1511038200, ohlcResult.Last);
+        }
+
         [Fact]
         public void TestGeneralError()
         {
             IList<Error> errors = new List<Error>();
 
-            try 
+            try
             {
                 var assets = _api.QueryPublicAsync("Tim", null).Result;
-            } 
+            }
             catch (AggregateException ex)
             {
                 Assert.IsType<KrakenException>(ex.InnerException);
-                errors = ((KrakenException) ex.InnerException).Errors;
+                errors = ((KrakenException)ex.InnerException).Errors;
             }
 
             Assert.Single(errors);

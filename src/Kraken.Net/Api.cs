@@ -557,8 +557,74 @@ namespace Kraken.Net
             }
         }
 
-        public Ticker GetTicker(List<string> pairs) {
-            return null; // new Ticker() {};
+        public IList<Ticker> GetTicker(List<string> pairs) {
+            try
+            {
+                return GetTickerAsync(pairs).Result;
+            }
+            catch (AggregateException ex)
+            {
+                RethrowKrakenException(ex);
+                throw;
+            }
+        }
+
+        private async Task<IList<Ticker>> GetTickerAsync(List<string> pairs)
+        {
+            var parameters = new Dictionary<String, String>
+            {
+                { "pair", string.Join(',', pairs) }
+            };
+
+            var json = await QueryPublicAsync("Ticker", parameters);
+
+            JObject jObj = JObject.Parse(json);
+            JEnumerable<JToken> results = jObj["result"].Children();
+
+            IList<Ticker> tickers = new List<Ticker>();
+            foreach (JToken token in results)
+            {
+                string pairName = ((JProperty)token).Name;
+
+                var obj = JsonConvert.DeserializeObject(token.First.ToString());
+
+                var ticker = new Ticker()
+                {
+                    Name = pairName
+                };
+
+                tickers.Add(ticker);
+            }
+
+
+            //List<OhlcData> ohlcHistory = new List<OhlcData>();
+            //foreach (var element in jOhlcData.First)
+            //{
+            //    ohlcHistory.Add(new OhlcData
+            //    {
+            //        Time = JsonConvert.DeserializeObject<int>(element[0].ToString()),
+            //        Open = JsonConvert.DeserializeObject<decimal>(element[1].ToString()),
+            //        High = JsonConvert.DeserializeObject<decimal>(element[2].ToString()),
+            //        Low = JsonConvert.DeserializeObject<decimal>(element[3].ToString()),
+            //        Close = JsonConvert.DeserializeObject<decimal>(element[4].ToString()),
+            //        VWAP = JsonConvert.DeserializeObject<decimal>(element[5].ToString()),
+            //        Volume = JsonConvert.DeserializeObject<decimal>(element[6].ToString()),
+            //        Count = JsonConvert.DeserializeObject<int>(element[7].ToString())
+            //    });
+            //}
+
+            //JToken jLast = results.ElementAt(1);
+            //int last = JsonConvert.DeserializeObject<int>(jLast.First.ToString());
+
+            //var receivedPair = ((JProperty)jOhlcData).Name;
+            //return new OhlcResult()
+            //{
+            //    Pair = receivedPair,
+            //    OhlcHistory = ohlcHistory,
+            //    Last = last
+            //};
+
+            return tickers;
         }
 
         /// <summary>
