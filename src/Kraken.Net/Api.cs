@@ -556,6 +556,11 @@ namespace Kraken.Net
                 throw;
             }
         }
+
+        public Ticker GetTicker(List<string> pairs) {
+            return null; // new Ticker() {};
+        }
+
         /// <summary>
         /// Returns an array of pair name and OHLC data
         /// </summary>
@@ -563,7 +568,7 @@ namespace Kraken.Net
         /// <param name="interval">time frame interval in minutes (optional): 1 (default), 5, 15, 30, 60, 240, 1440, 10080, 21600</param>
         /// <param name="since">eturn committed OHLC data since given id (optional.  exclusive)</param>
         /// <returns></returns>
-        public OhlcResult GetOhlcData(String pair, int interval = 1, int? since = null)
+        public OhlcResult GetOhlc(String pair, int interval = 1, int? since = null)
         {
             try
             {

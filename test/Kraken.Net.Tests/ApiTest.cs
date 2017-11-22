@@ -45,6 +45,15 @@ namespace Kraken.Net.Tests
                     Content = new StringContent(File.ReadAllText("Responses/OHLC.json"))
                 }
             );
+
+            handler.AddResponse(
+                new Uri(String.Format("{0}/{1}/public/{2}", Api.Url, Api.Version, "Ticker")),
+                String.Format("pair={0}", "XBTEUR,ETHEUR"),
+                new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new StringContent(File.ReadAllText("Responses/Ticker.json"))
+                }
+            );        
         }
 
         [Fact]
@@ -92,7 +101,16 @@ namespace Kraken.Net.Tests
 
 
         [Fact]
-        public void TestGetOhlcData()
+        public void TestGetTicker()
+        {
+            var pairs = new List<string>() {"XBTEUR", "ETHEUR" };
+            var ticker = _api.GetTicker(pairs);
+            Assert.NotNull(ticker);
+        }
+
+
+        [Fact]
+        public void TestGetOhlc()
         {
             const string pair = "ETHEUR";
             const int interval = 5;
@@ -105,7 +123,7 @@ namespace Kraken.Net.Tests
             const decimal expectedVolume = 136.98078487m;
             const int expectedCount = 48;
 
-            var ohlcResult = _api.GetOhlcData(pair, interval, 1511034000);
+            var ohlcResult = _api.GetOhlc(pair, interval, 1511034000);
 
             Assert.Equal(1511038200, ohlcResult.Last);
             Assert.Equal("XETHZEUR", ohlcResult.Pair);
