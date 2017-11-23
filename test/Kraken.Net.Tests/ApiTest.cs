@@ -120,6 +120,8 @@ namespace Kraken.Net.Tests
             Assert.Equal(2, tickers.Count);
             Assert.Contains(tickers, t => t.Name == "XXBTZEUR");
             Assert.Contains(tickers, t => t.Name == "XETHZEUR");
+            var ticker = tickers.FirstOrDefault(t => t.Name == "XETHZEUR");
+            Assert.NotNull(ticker);
         }
 
 
