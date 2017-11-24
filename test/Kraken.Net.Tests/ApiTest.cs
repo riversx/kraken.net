@@ -130,30 +130,21 @@ namespace Kraken.Net.Tests
         {
             const string pair = "ETHEUR";
             const int interval = 5;
-            const int expextedTime = 1511034300;
-            const decimal expectedOpen = 285.00m;
-            const decimal expectedHigh = 285.00m;
-            const decimal expectedLow = 284.80m;
-            const decimal expectedClose = 284.96m;
-            const decimal expectedVWAP = 284.96m;
-            const decimal expectedVolume = 136.98078487m;
-            const int expectedCount = 48;
 
             var ohlcResult = _api.GetOhlc(pair, interval, 1511034000);
 
             Assert.Equal(1511038200, ohlcResult.Last);
             Assert.Equal("XETHZEUR", ohlcResult.Pair);
             Assert.Equal(15, ohlcResult.OhlcHistory.Count);
-
             var ohlcData = ohlcResult.OhlcHistory[0];
-            Assert.Equal(expextedTime, ohlcData.Time);
-            Assert.Equal(expectedOpen, ohlcData.Open);
-            Assert.Equal(expectedHigh, ohlcData.High);
-            Assert.Equal(expectedLow, ohlcData.Low);
-            Assert.Equal(expectedClose, ohlcData.Close);
-            Assert.Equal(expectedVWAP, ohlcData.VWAP);
-            Assert.Equal(expectedVolume, ohlcData.Volume);
-            Assert.Equal(expectedCount, ohlcData.Count);
+            Assert.Equal(1511034300, ohlcData.Time);
+            Assert.Equal(285.00m, ohlcData.Open);
+            Assert.Equal(285.00m, ohlcData.High);
+            Assert.Equal(284.80m, ohlcData.Low);
+            Assert.Equal(284.96m, ohlcData.Close);
+            Assert.Equal(284.96m, ohlcData.VWAP);
+            Assert.Equal(136.98078487m, ohlcData.Volume);
+            Assert.Equal(48, ohlcData.Count);
         }
 
         [Fact(Skip="Unimplemented error catch")]

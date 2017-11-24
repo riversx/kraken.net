@@ -69,6 +69,18 @@ namespace Kraken.Net.Models
 
     public class PriceLotVolume
     {
+        public PriceLotVolume(double[] values)
+        {
+            Price = values[0];
+            WholeLotVolume = values[1];
+            LotVolume = values[2];
+        }
+
+        public static implicit operator PriceLotVolume(double[] values)
+        {
+            return new PriceLotVolume(values);
+        }
+
         public double Price { get; set; }
         public double WholeLotVolume { get; set; }
         public double LotVolume { get; set; }
@@ -76,12 +88,34 @@ namespace Kraken.Net.Models
 
     public class PriceVolume
     {
+        public PriceVolume(decimal[] values)
+        {
+            Price = values[0];
+            Volume = values[1];
+        }
+
+        public static implicit operator PriceVolume(decimal[] values)
+        {
+            return new PriceVolume(values);
+        }
+
         public decimal Price { get; set; }
         public decimal Volume { get; set; }
     }
 
     public class TodayLast24h<T> where T: struct
     {
+        public TodayLast24h(T[] values)
+        {
+            Today = values[0];
+            Last24h = values[1];
+        }
+
+        public static implicit operator TodayLast24h<T>(T[] values)
+        {
+            return new TodayLast24h<T>(values);
+        }
+
         public T Today { get; set; }
         public T Last24h { get; set; }
     }
