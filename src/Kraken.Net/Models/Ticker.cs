@@ -1,5 +1,6 @@
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Kraken.Net.Models
 {
@@ -46,7 +47,7 @@ namespace Kraken.Net.Models
         /// t = number of trades array(<today>, <last 24 hours>),
         /// ex:  "t": [ 4105, 11549 ],
         /// </summary>
-        public TodayLast24h<int> Tradesnumber { get; set; }
+        public TodayLast24h<int> TradesNumber { get; set; }
 
         /// <summary>
         /// l = low array(<today>, <last 24 hours>),

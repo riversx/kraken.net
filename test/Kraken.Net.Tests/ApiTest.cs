@@ -147,6 +147,7 @@ namespace Kraken.Net.Tests
             Assert.Equal(48, ohlcData.Count);
         }
 
+
         [Fact(Skip="Unimplemented error catch")]
         public void TestGetOhlcWithWrongPair()
         {
@@ -157,6 +158,7 @@ namespace Kraken.Net.Tests
 
             Assert.Equal(1511038200, ohlcResult.Last);
         }
+
 
         [Fact]
         public void TestGeneralError()

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Kraken.Net.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Globalization;
 
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedMember.Global
@@ -19,6 +20,8 @@ namespace Kraken.Net
     /// </summary>
     public class Api
     {
+        private CultureInfo invariantCulture = CultureInfo.InvariantCulture;
+
         /// <summary>
         /// The default Kraken API url
         /// </summary>
@@ -586,43 +589,33 @@ namespace Kraken.Net
             {
                 string pairName = ((JProperty)token).Name;
 
-                var obj = JsonConvert.DeserializeObject(token.First.ToString());
+                var children = token.First.Children();
+                var a = JsonConvert.DeserializeObject<double[]>(children.ElementAt(0).First.ToString());
+                var b = JsonConvert.DeserializeObject<double[]>(children.ElementAt(1).First.ToString());
+                var c = JsonConvert.DeserializeObject<decimal[]>(children.ElementAt(2).First.ToString());
+                var v = JsonConvert.DeserializeObject<decimal[]>(children.ElementAt(3).First.ToString());
+                var p = JsonConvert.DeserializeObject<double[]>(children.ElementAt(4).First.ToString());
+                var t = JsonConvert.DeserializeObject<int[]>(children.ElementAt(5).First.ToString());
+                var l = JsonConvert.DeserializeObject<double[]>(children.ElementAt(6).First.ToString());
+                var h = JsonConvert.DeserializeObject<double[]>(children.ElementAt(7).First.ToString());
+                var o = JsonConvert.DeserializeObject<double>(children.ElementAt(8).First.ToString());
 
                 var ticker = new Ticker()
                 {
-                    Name = pairName
+                    Name = pairName,
+                    Ask = a,
+                    Bid = b,
+                    LastClosedTrade = c,
+                    Volume = v,
+                    VWAP = p,
+                    TradesNumber = t,
+                    Low = l,
+                    High = h,
+                    TodayOpeningPrice = o
                 };
 
                 tickers.Add(ticker);
             }
-
-
-            //List<OhlcData> ohlcHistory = new List<OhlcData>();
-            //foreach (var element in jOhlcData.First)
-            //{
-            //    ohlcHistory.Add(new OhlcData
-            //    {
-            //        Time = JsonConvert.DeserializeObject<int>(element[0].ToString()),
-            //        Open = JsonConvert.DeserializeObject<decimal>(element[1].ToString()),
-            //        High = JsonConvert.DeserializeObject<decimal>(element[2].ToString()),
-            //        Low = JsonConvert.DeserializeObject<decimal>(element[3].ToString()),
-            //        Close = JsonConvert.DeserializeObject<decimal>(element[4].ToString()),
-            //        VWAP = JsonConvert.DeserializeObject<decimal>(element[5].ToString()),
-            //        Volume = JsonConvert.DeserializeObject<decimal>(element[6].ToString()),
-            //        Count = JsonConvert.DeserializeObject<int>(element[7].ToString())
-            //    });
-            //}
-
-            //JToken jLast = results.ElementAt(1);
-            //int last = JsonConvert.DeserializeObject<int>(jLast.First.ToString());
-
-            //var receivedPair = ((JProperty)jOhlcData).Name;
-            //return new OhlcResult()
-            //{
-            //    Pair = receivedPair,
-            //    OhlcHistory = ohlcHistory,
-            //    Last = last
-            //};
 
             return tickers;
         }
