@@ -10,7 +10,7 @@ Public:
 | Get server time          | :white_check_mark: |
 | Get asset info           | :white_check_mark: |
 | Get tradable asset pairs | :white_check_mark: |
-| Get ticker information   | :x:                |
+| Get ticker information   | :white_check_mark: |
 | Get OHLC data            | :white_check_mark: |
 | Get order book           | :x:                |
 | Get recent trades        | :x:                |

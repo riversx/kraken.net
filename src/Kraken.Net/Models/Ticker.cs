@@ -41,7 +41,7 @@ namespace Kraken.Net.Models
         /// p = volume weighted average price array(<today>, <last 24 hours>),
         /// ex: "p": [ "311.48548", "310.74913" ],
         /// </summary>
-        public TodayLast24h<double> VWAP { get; set; }
+        public TodayLast24h<decimal> VWAP { get; set; }
 
         /// <summary>
         /// t = number of trades array(<today>, <last 24 hours>),
@@ -53,38 +53,38 @@ namespace Kraken.Net.Models
         /// l = low array(<today>, <last 24 hours>),
         /// ex: "l": [ "305.59000", "305.00000" ],
         /// </summary>
-        public TodayLast24h<double> Low { get; set; }
+        public TodayLast24h<decimal> Low { get; set; }
 
         /// <summary>
         /// h = high array(<today>, <last 24 hours>),
         /// ex: "h": [ "313.11000", "313.11000" ],
         /// </summary>
-        public TodayLast24h<double> High { get; set; }
+        public TodayLast24h<decimal> High { get; set; }
 
         /// <summary>
         /// o = today's opening price
         /// ex:  "o": "306.01000"
         /// </summary>
-        public double TodayOpeningPrice { get; set; }
+        public decimal TodayOpeningPrice { get; set; }
     }
 
     public class PriceLotVolume
     {
-        public PriceLotVolume(double[] values)
+        public PriceLotVolume(decimal[] values)
         {
             Price = values[0];
             WholeLotVolume = values[1];
             LotVolume = values[2];
         }
 
-        public static implicit operator PriceLotVolume(double[] values)
+        public static implicit operator PriceLotVolume(decimal[] values)
         {
             return new PriceLotVolume(values);
         }
 
-        public double Price { get; set; }
-        public double WholeLotVolume { get; set; }
-        public double LotVolume { get; set; }
+        public decimal Price { get; set; }
+        public decimal WholeLotVolume { get; set; }
+        public decimal LotVolume { get; set; }
     }
 
     public class PriceVolume

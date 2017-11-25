@@ -590,28 +590,28 @@ namespace Kraken.Net
                 string pairName = ((JProperty)token).Name;
 
                 var children = token.First.Children();
-                var a = JsonConvert.DeserializeObject<double[]>(children.ElementAt(0).First.ToString());
-                var b = JsonConvert.DeserializeObject<double[]>(children.ElementAt(1).First.ToString());
-                var c = JsonConvert.DeserializeObject<decimal[]>(children.ElementAt(2).First.ToString());
-                var v = JsonConvert.DeserializeObject<decimal[]>(children.ElementAt(3).First.ToString());
-                var p = JsonConvert.DeserializeObject<double[]>(children.ElementAt(4).First.ToString());
-                var t = JsonConvert.DeserializeObject<int[]>(children.ElementAt(5).First.ToString());
-                var l = JsonConvert.DeserializeObject<double[]>(children.ElementAt(6).First.ToString());
-                var h = JsonConvert.DeserializeObject<double[]>(children.ElementAt(7).First.ToString());
-                var o = JsonConvert.DeserializeObject<double>(children.ElementAt(8).First.ToString());
+                var ask = JsonConvert.DeserializeObject<decimal[]>(children.ElementAt(0).First.ToString());
+                var bid = JsonConvert.DeserializeObject<decimal[]>(children.ElementAt(1).First.ToString());
+                var close = JsonConvert.DeserializeObject<decimal[]>(children.ElementAt(2).First.ToString());
+                var volume = JsonConvert.DeserializeObject<decimal[]>(children.ElementAt(3).First.ToString());
+                var vwap = JsonConvert.DeserializeObject<decimal[]>(children.ElementAt(4).First.ToString());
+                var trades = JsonConvert.DeserializeObject<int[]>(children.ElementAt(5).First.ToString());
+                var low = JsonConvert.DeserializeObject<decimal[]>(children.ElementAt(6).First.ToString());
+                var high = JsonConvert.DeserializeObject<decimal[]>(children.ElementAt(7).First.ToString());
+                var opening = JsonConvert.DeserializeObject<decimal>(children.ElementAt(8).First.ToString());
 
                 var ticker = new Ticker()
                 {
                     Name = pairName,
-                    Ask = a,
-                    Bid = b,
-                    LastClosedTrade = c,
-                    Volume = v,
-                    VWAP = p,
-                    TradesNumber = t,
-                    Low = l,
-                    High = h,
-                    TodayOpeningPrice = o
+                    Ask = ask,
+                    Bid = bid,
+                    LastClosedTrade = close,
+                    Volume = volume,
+                    VWAP = vwap,
+                    TradesNumber = trades,
+                    Low = low,
+                    High = high,
+                    TodayOpeningPrice = opening
                 };
 
                 tickers.Add(ticker);

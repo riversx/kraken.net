@@ -122,6 +122,15 @@ namespace Kraken.Net.Tests
             Assert.Contains(tickers, t => t.Name == "XETHZEUR");
             var ticker = tickers.FirstOrDefault(t => t.Name == "XETHZEUR");
             Assert.NotNull(ticker);
+            Assert.Equal(312.73000m, ticker.Ask.Price);
+            Assert.Equal(312.21000m, ticker.Bid.Price);
+            Assert.Equal(312.21000m, ticker.LastClosedTrade.Price);
+            Assert.Equal(13052.65894436m, ticker.Volume.Today);
+            Assert.Equal(311.48548m, ticker.VWAP.Today);
+            Assert.Equal(4105, ticker.TradesNumber.Today);
+            Assert.Equal(305.59000m, ticker.Low.Today);
+            Assert.Equal(313.11000m, ticker.High.Today);
+            Assert.Equal(306.01000m, ticker.TodayOpeningPrice);
         }
 
 
