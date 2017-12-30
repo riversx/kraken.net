@@ -286,6 +286,11 @@ namespace Kraken.Net
 
             var json = await QueryPublicAsync("OHLC", parameters);
 
+            return ParseOhlcJsonResponse(json);
+        }
+
+        public static OhlcResult ParseOhlcJsonResponse(string json)
+        {
             JObject jObj = JObject.Parse(json);
             JEnumerable<JToken> results = jObj["result"].Children();
 
